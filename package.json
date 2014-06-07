@@ -1,0 +1,14 @@
+{
+  "name": "Slideshow-backend",
+  "version": "0.0.1",
+  "description": "Node.js & ws backend for android app. ",
+  "main": "app.js",
+  "dependencies": {
+    "ws": "~0.4.31"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DirtyJerz/Slideshow-backend.git"
+  },
+  "author": "moconnor",
+}
