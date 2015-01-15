@@ -81,21 +81,20 @@ function setupMeter(addr){
 //  addr.writeBytes(0x00, 0x8000); //Reset
 //  sleep(500, function(){});
   var byte = (0x2000 | 0x1800 | 0x0400 | 0x0018 | 0x0007); 
-  addr.writeBytes(0x00, [((byte >> 8) & 0xFF), (byte & 0xFF)]);
-  console.log('Config Reg: ', addr.readBytes(0x00,2).toString('hex',0,2));
+  addr.writeBytes(0x00, [((byte >> 8) & 0xFF), (byte & 0xFF)], function(err) {});
+  console.log('Config Reg: ', addr.readBytes(0x00,2, function(err, res) {}).toString('hex',0,2));
   //cal:
-  addr.writeBytes(0x05,[((0x2800 >> 8) & 0xFF), (0x2800 & 0xFF)]);
-  console.log('Cal: ', addr.readBytes(0x05,2).toString('hex',0,2));
-
+  addr.writeBytes(0x05,[((0x2800 >> 8) & 0xFF), (0x2800 & 0xFF)], function(err) {});
+  console.log('Cal: ', addr.readBytes(0x05,2, function(err, res) {}).toString('hex',0,2));
 }  
 
 function setupDisplay(addr){
   //turn on oscillator
-  addr.writeBytes(0x21, 0x00);
+  addr.writeBytes(0x21, 0x00, function(err) {});
   //max brightness
-  addr.writeBytes(0xE4, 0x00);
+  addr.writeBytes(0xE4, 0x00, function(err) {});
   //Blink Off
-  addr.writeBytes(0x81, 0x00);
+  addr.writeBytes(0x81, 0x00, function(err) {});
   clear(addr);
 }
 
@@ -122,8 +121,8 @@ function measure() {
 
 function measureI(addr) {
   var buff, result;
-  addr.writeBytes(0x05, ina219_calValue); //set cal incase of err
-  buff =  addr.readBytes(0x04,2);
+  addr.writeBytes(0x05, ina219_calValue, function(err) {}); //set cal incase of err
+  buff =  addr.readBytes(0x04,2, function(err, res) {});
   result = buff.readUInt16BE(0) / ina219_currentDiv_mA;
 //  console.log('current: ' , result);
   return result;
@@ -131,8 +130,8 @@ function measureI(addr) {
 
 function measureV(addr) {
   var buff, result;
-  addr.writeBytes(0x05, ina219_calValue); //set cal incase of err
-  buff =  addr.readBytes(0x01,2);
+  addr.writeBytes(0x05, ina219_calValue, function(err) {}); //set cal incase of err
+  buff =  addr.readBytes(0x01,2, function(err, res) {});
   result = buff.readUInt16BE(0) * 0.01;
 //  console.log('voltage: ' , result);
   return result;
@@ -140,8 +139,8 @@ function measureV(addr) {
 
 function measureBusV(addr) {
   var buff, result;
-  addr.writeBytes(0x05, ina219_calValue); //set cal incase of err
-  buff =  addr.readBytes(0x02,2);
+  addr.writeBytes(0x05, ina219_calValue, function(err) {}); //set cal incase of err
+  buff =  addr.readBytes(0x02,2, function(err, res) {});
   result = ((buff.readUInt16BE(0) >> 3) * 4) * 0.001;
 //  console.log('Bus voltage: ' , result);
   return result;
@@ -149,21 +148,21 @@ function measureBusV(addr) {
 
 function measureP(addr) {
   var buff, result;
-  addr.writeBytes(0x05, ina219_calValue); //set cal incase of err
-  buff =  addr.readBytes(0x03,2);
+  addr.writeBytes(0x05, ina219_calValue, function(err) {}); //set cal incase of err
+  buff =  addr.readBytes(0x03,2, function(err, res) {});
 //  console.log('power: ' , buff.readUInt16BE(0));
   result = buff.readInt16LE(0);
   return result;
 }
 
 function writeDisp(addr){
-  addr.writeByte(0x00);
+  addr.writeByte(0x00, function(err) {});
   bytes = [];
   for(var i=0;i<8;i++){
     bytes.push(buffer[i] & 0xFF);
     bytes.push((buffer[i] >> 8) & 0xFF);
   }
-  addr.writeBytes(0x00, bytes);
+  addr.writeBytes(0x00, bytes, function(err) {});
 //  console.log(bytes);
 }
 
